@@ -3,16 +3,17 @@
 ## 📡 API Endpoints (ตัวอย่าง)
 ```
 # Employees
-POST   /api/v1/employees
-GET    /api/v1/employees
-GET    /api/v1/employees/{id}
-PUT    /api/v1/employees/{id}
-DELETE /api/v1/employees/{id}
+GET    /api/v1/employee
+GET    /api/v1/employee/{id}
+POST   /api/v1/employee
+PUT    /api/v1/employee/{id}
+DELETE /api/v1/employee/{id}
 
 # Exchange Rates
-GET    /api/v1/exchange-rates/latest
-GET    /api/v1/exchange-rates/history
-POST   /api/v1/exchange-rates/refresh
+POST    /api/v1/exchange-rates/upload
+GET     /api/v1/exchange-rates
+GET     /api/v1/exchange-rates/{date}
+DELETE  /api/v1/exchange-rates/{date}
 
 # Payroll
 POST   /api/v1/payrolls/calculate
