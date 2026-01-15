@@ -14,8 +14,8 @@ public class ExchangeRateController {
     private final ExchangeRateService exchangeRateService;
 
     @PostMapping()
-    public ExchangeRate uploadExchangeRate(ExchangeRate exchangeRate) throws Exception{
-        ExchangeRate newExchangRate = exchangeRateService.upload(exchangeRate);
+    public List<ExchangeRate> uploadExchangeRate(String filename,String base64Data) throws Exception{
+        List<ExchangeRate> newExchangRate = exchangeRateService.upload(filename,base64Data);
         return newExchangRate;
     }
 

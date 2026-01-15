@@ -2,6 +2,7 @@ package com.npg.payroll.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,22 +13,27 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name ="tb_exchange_rate")
 public class ExchangeRate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //THB
-    private String fromCurrency;
+    private Long exchangeRateFileId;
 
-    //USD,...
-    private String toCurrency;
+    private String currencyCode;
 
-    //วันที่ระบุอัตราแลกเปลี่ยน
-    private String date;
+    @Column(precision = 10,scale = 4)
+    private BigDecimal buyingSightBill;
 
-    //อัตราเเลกเปลี่ยน
-    @Column(precision = 15,scale = 2)
-    private BigDecimal rate;
+    @Column(precision = 10,scale = 4)
+    private BigDecimal buyingTt;
+
+    @Column(precision = 10,scale = 4)
+    private BigDecimal sellingBillDdTt;
+
+    private String recordStatus;
+
+
 }
