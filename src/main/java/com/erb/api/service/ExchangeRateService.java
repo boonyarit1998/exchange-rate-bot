@@ -14,11 +14,16 @@ import org.apache.poi.util.StringUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.DateFormatter;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,9 +40,10 @@ public class ExchangeRateService {
     private String prefixFileName;
 
     @Transactional
-    public List<ExchangeRate> uploadExchangeRate(String filename,String base64Data) throws Exception {
+    public List<ExchangeRate> uploadExchangeRateBase64(String filename,String base64Data) throws Exception {
         LocalDateTime currenDateTime = LocalDateTime.now();
         String dateFile = getStringFromFileName(filename);
+        LocalDateTime dateTimeFile = getLocalDateFromFileName(filename);
 
         //check ชื่อไฟลล์
         if(!vaildateExchangeRateFileName(filename)){
@@ -74,6 +80,7 @@ public class ExchangeRateService {
         ExchangeRateFile exchangeRateFile = ExchangeRateFile.builder()
                 .exchangeRateFileName(filename)
                 .exchangeRateFileDate(dateFile)
+                .exchangeRateFileDateTime(dateTimeFile)
                 .uploadBy("SYSTEM")
                 .uploadDate(currenDateTime)
                 .uploadStatus("P")
@@ -91,6 +98,92 @@ public class ExchangeRateService {
 
         byte[] decodeBytes = DatatypeConverter.parseBase64Binary(base64Data);
         try(InputStream inputStream = new ByteArrayInputStream(decodeBytes);Workbook workbook = new XSSFWorkbook(inputStream)){
+            Sheet sheet = workbook.getSheetAt(0);
+            for(Row row : sheet){
+                if(row.getRowNum() > maxRow){
+                    break;
+                }
+                if (row.getRowNum() > startRow){
+                    ExchangeRate exchangeRate = ExchangeRate.builder()
+                            .exchangeRateFileId(newExchangeRateFile.getId())
+                            .recordStatus("A")
+                            .currencyCode(row.getCell(1).getStringCellValue())
+                            .buyingSightBill(getBigDecimalCellValue(row.getCell(2)))
+                            .buyingTt(getBigDecimalCellValue(row.getCell(3)))
+                            .sellingBillDdTt(getBigDecimalCellValue(row.getCell(4)))
+                            .build();
+                    tempRows.add(exchangeRate);
+                }
+            }
+            exchangeRateRepository.saveAll(tempRows);
+        } catch (Exception e) {
+            log.error("Error upload");
+            throw e;
+        }
+
+        return tempRows;
+    }
+
+    @Transactional
+    public List<ExchangeRate> uploadExchangeRateExcel(MultipartFile file) throws Exception {
+
+        String filename = file.getOriginalFilename();
+        LocalDateTime currenDateTime = LocalDateTime.now();
+        String dateFile = getStringFromFileName(filename);
+        LocalDateTime dateTimeFile = getLocalDateFromFileName(filename);
+
+        //check ชื่อไฟลล์
+        if(!vaildateExchangeRateFileName(filename)){
+            throw new UploadFileException("upload file error");
+        }
+
+        ExchangeRateFile Duplicate = exchangeRateFileRepository.fileExchangeRateFileDateRecordA(dateFile);
+
+
+        //เช็คไฟลล์ซ้ำ
+        //1.กรณีซ้ำแล้วต้องการ update record_status เป็น D
+        /*if (Duplicate != null){
+
+            exchangeRateRepository.updateAllExchangeRateByFileID(Duplicate.getId());
+
+            Duplicate.setRecordStatus("D");
+            Duplicate.setUpdateBy("SYSTEM");
+            Duplicate.setUpdateDate(currenDateTime);
+            exchangeRateFileRepository.save(Duplicate);
+        }*/
+
+        //2.กรณีซ้ำแล้วต้องการลบของเดิมออก
+        if(Duplicate != null){
+
+            List<Long> ids = exchangeRateRepository.findByExchangeRateFileId(Duplicate.getId()).stream().map(ExchangeRate::getId).toList();
+            exchangeRateRepository.deleteAllById(ids);
+            exchangeRateFileRepository.deleteById(Duplicate.getId());
+
+        }
+
+
+
+        //กรณีไม่ซ้ำเพิ่มใหม่
+        ExchangeRateFile exchangeRateFile = ExchangeRateFile.builder()
+                .exchangeRateFileName(filename)
+                .exchangeRateFileDate(dateFile)
+                .exchangeRateFileDateTime(dateTimeFile)
+                .uploadBy("SYSTEM")
+                .uploadDate(currenDateTime)
+                .uploadStatus("P")
+                .recordStatus("A")
+                .updateDate(currenDateTime)
+                .updateBy("SYSTEM")
+                .build();
+
+        ExchangeRateFile newExchangeRateFile = exchangeRateFileRepository.save(exchangeRateFile);
+
+        List<ExchangeRate> tempRows = new ArrayList<>();
+
+        int startRow = 3;
+        int maxRow = 22;
+
+        try(InputStream inputStream = file.getInputStream();Workbook workbook = new XSSFWorkbook(inputStream)){
             Sheet sheet = workbook.getSheetAt(0);
             for(Row row : sheet){
                 if(row.getRowNum() > maxRow){
@@ -153,6 +246,12 @@ public class ExchangeRateService {
     public String getStringFromFileName(String filename){
         String date = filename.substring(prefixFileName.length(),prefixFileName.length()+8);
         return date;
+    }
+
+    public LocalDateTime getLocalDateFromFileName(String filename){
+        String date = filename.substring(prefixFileName.length(),prefixFileName.length()+8);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+        return LocalDate.parse(date,formatter).atStartOfDay();
     }
 
     private static BigDecimal getBigDecimalCellValue(Cell cell)throws  Exception{

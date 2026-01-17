@@ -3,11 +3,12 @@
 ## 📡 API Endpoints (ตัวอย่าง)
 ```
 # Exchange Rates
-POST    /api/v1/exchange_rate/upload
-GET     /api/v1/exchange_rate
-GET     /api/v1/exchange_rate/file
-GET     /api/v1/exchange_rate/{date}
-DELETE  /api/v1/exchange_rate/{date}
+POST    /api/v1/exchangeRate/base64
+POST    /api/v1/exchangeRate/excel
+GET     /api/v1/exchangeRate/
+GET     /api/v1/exchangeRate/file
+GET     /api/v1/exchangeRate/{date}
+DELETE  /api/v1/exchangeRate/{date}
 
 ```
 

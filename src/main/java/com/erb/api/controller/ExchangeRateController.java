@@ -7,19 +7,24 @@ import com.erb.api.service.ExchangeRateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/exchange_rate")
+@RequestMapping("/api/v1/exchangeRate")
 @RequiredArgsConstructor
 public class ExchangeRateController {
     private final ExchangeRateService exchangeRateService;
 
-    @PostMapping()
+    @PostMapping("/base64")
     public ResponseEntity<List<ExchangeRate>> uploadExchangeRate(@RequestBody UploadExchangeRateRequest request) throws Exception{
-        List<ExchangeRate> newExchangRate = exchangeRateService.uploadExchangeRate(request.getFilename(),request.getBase64Data());
-        return ResponseEntity.ok().body(newExchangRate);
+        return ResponseEntity.ok().body(exchangeRateService.uploadExchangeRateBase64(request.getFilename(),request.getBase64Data()));
+    }
+
+    @PostMapping("/excel")
+    public ResponseEntity<List<ExchangeRate>> uploadExchangeRate(@RequestParam("file")MultipartFile file) throws Exception{
+        return ResponseEntity.ok().body(exchangeRateService.uploadExchangeRateExcel(file));
     }
 
     @GetMapping()
