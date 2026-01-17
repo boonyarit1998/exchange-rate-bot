@@ -1,4 +1,4 @@
-package com.npg.payroll.dto;
+package com.erb.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

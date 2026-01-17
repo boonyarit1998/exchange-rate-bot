@@ -1,9 +1,9 @@
-package com.npg.payroll.controller;
+package com.erb.api.controller;
 
-import com.npg.payroll.dto.UploadExchangeRateRequest;
-import com.npg.payroll.entity.ExchangeRate;
-import com.npg.payroll.entity.ExchangeRateFile;
-import com.npg.payroll.service.ExchangeRateService;
+import com.erb.api.dto.UploadExchangeRateRequest;
+import com.erb.api.entity.ExchangeRate;
+import com.erb.api.entity.ExchangeRateFile;
+import com.erb.api.service.ExchangeRateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

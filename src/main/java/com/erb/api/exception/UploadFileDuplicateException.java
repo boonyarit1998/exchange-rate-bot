@@ -1,4 +1,4 @@
-package com.npg.payroll.exception;
+package com.erb.api.exception;
 
 public class UploadFileDuplicateException extends RuntimeException {
     public UploadFileDuplicateException(String message) {

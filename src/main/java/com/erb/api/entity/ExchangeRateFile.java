@@ -1,4 +1,4 @@
-package com.npg.payroll.entity;
+package com.erb.api.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

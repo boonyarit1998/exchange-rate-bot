@@ -1,4 +1,4 @@
-package com.npg.payroll.exception;
+package com.erb.api.exception;
 
 public class UploadFileException extends RuntimeException {
     public UploadFileException(String message) {

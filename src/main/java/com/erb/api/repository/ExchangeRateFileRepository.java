@@ -1,7 +1,6 @@
-package com.npg.payroll.repository;
+package com.erb.api.repository;
 
-import com.npg.payroll.entity.ExchangeRate;
-import com.npg.payroll.entity.ExchangeRateFile;
+import com.erb.api.entity.ExchangeRateFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

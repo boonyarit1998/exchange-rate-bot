@@ -3,22 +3,22 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15
-    container_name: payroll-postgres
+    container_name: erb-postgres
     restart: always
     environment:
-      POSTGRES_USER: payroll_user
-      POSTGRES_PASSWORD: payroll_password
-      POSTGRES_DB: payrollDB
+      POSTGRES_USER: erb_User@i7oi
+      POSTGRES_PASSWORD: erb_P@ssW0rdi7oi
+      POSTGRES_DB: erb
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - payroll-net
+      - erb-net
 
 volumes:
   postgres_data:
 
 networks:
-  payroll-net:
+  erb-net:
     driver: bridge

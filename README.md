@@ -13,7 +13,7 @@ DELETE  /api/v1/exchange_rate/{date}
 
 ## 💻 ตัวอย่าง Code Structure
 ```
-src/main/java/com/company/payroll/
+src/main/java/com/erb/api/
 ├── config/
 │   ├── SecurityConfig.java
 │   ├── SchedulerConfig.java
