@@ -1,26 +1,13 @@
-# npg-ws-payroll
+# exchange-rate-bot
 
 ## 📡 API Endpoints (ตัวอย่าง)
 ```
-# Employees
-GET    /api/v1/employee
-GET    /api/v1/employee/{id}
-POST   /api/v1/employee
-PUT    /api/v1/employee/{id}
-DELETE /api/v1/employee/{id}
-
 # Exchange Rates
-POST    /api/v1/exchange-rates/upload
-GET     /api/v1/exchange-rates
-GET     /api/v1/exchange-rates/{date}
-DELETE  /api/v1/exchange-rates/{date}
-
-# Payroll
-POST   /api/v1/payrolls/calculate
-GET    /api/v1/payrolls
-GET    /api/v1/payrolls/{month}
-GET    /api/v1/payrolls/employeeId/{employeeId}
-GET    /api/v1/payrolls/employeeId/{employeeId}/{month}
+POST    /api/v1/exchange_rate/upload
+GET     /api/v1/exchange_rate
+GET     /api/v1/exchange_rate/file
+GET     /api/v1/exchange_rate/{date}
+DELETE  /api/v1/exchange_rate/{date}
 
 ```
 
@@ -32,28 +19,19 @@ src/main/java/com/company/payroll/
 │   ├── SchedulerConfig.java
 │   └── RedisConfig.java
 ├── controller/
-│   ├── EmployeeController.java
-│   ├── PayrollController.java
 │   └── ExchangeRateController.java
 ├── service/
-│   ├── EmployeeService.java
-│   ├── PayrollService.java
 │   └── ExchangeRateService.java
 ├── repository/
-│   ├── EmployeeRepository.java
-│   ├── PayrollRepository.java
+│   ├── ExchangeRateFileRepository.java
 │   └── ExchangeRateRepository.java
-├── model/
-│   ├── Employee.java
-│   ├── Payroll.java
-│   └── ExchangeRate.java
+├── entity/
+│   ├── ExchangeRate.java
+│   └── ExchangeRateFile.java
 ├── dto/
-│   ├── EmployeeDTO.java
-│   ├── PayrollRequest.java
-│   └── PayrollResponse.java
+│   └── UploadExchangeRateRequest.java
 ├── scheduler/
-│   └── PayrollScheduler.java
-├── client/
-│   └── ExchangeRateClient.java
+│   └── ExchangeScheduler.java
 └── exception/
-    └── GlobalExceptionHandler.java
+    ├── UploadFileException.java
+    └── UploadFileDuplicateException.java
