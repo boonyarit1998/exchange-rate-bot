@@ -6,6 +6,7 @@ import com.erb.api.entity.ExchangeRateFile;
 import com.erb.api.service.ExchangeRateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,11 +19,14 @@ public class ExchangeRateController {
     private final ExchangeRateService exchangeRateService;
 
     @PostMapping("/base64")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ExchangeRate>> uploadExchangeRate(@RequestBody UploadExchangeRateRequest request) throws Exception{
         return ResponseEntity.ok().body(exchangeRateService.uploadExchangeRateBase64(request.getFilename(),request.getBase64Data()));
     }
 
+
     @PostMapping("/excel")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ExchangeRate>> uploadExchangeRate(@RequestParam("file")MultipartFile file) throws Exception{
         return ResponseEntity.ok().body(exchangeRateService.uploadExchangeRateExcel(file));
     }
@@ -46,6 +50,7 @@ public class ExchangeRateController {
     }
 
     @DeleteMapping("/{date}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteExchangeRate(@PathVariable String date) throws Exception{
         boolean deleteFlag = exchangeRateService.deleteExchangRate(date);
         if (!deleteFlag){
